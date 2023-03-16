@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Login Page</title>
+    <script src= "../js/yinghua.js"></script>
+    <style>
+      body {
+        background: linear-gradient(to right, #667eea, #764ba2);
+        text-align: center;
+      }
+      #loginForm {
+        display: inline-block; /* make the form a block element */
+        margin: auto; /* center the form horizontally within the body */
+      }
+      #cherryBlossomsCanvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: -1;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Login Page</h1>
+    <form id="loginForm">
+      <label for="account">Account:</label>
+      <input type="text" id="account" name="account" required>
+      <br>
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required>
+      <br>
+      <button type="submit" id="loginButton">Login</button>
+    </form>
+    <script>
+      const form = document.getElementById('loginForm');
+      const loginButton = document.getElementById('loginButton');
+      const apiUrl = '/login'; // 替换为实际的登录API URL
+
+      form.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const account = document.getElementById('account').value;
+        const password = document.getElementById('password').value;
+
+        const formData = new FormData();
+        formData.append('account', account);
+        formData.append('password', password);
+
+        fetch(apiUrl, {
+          method: 'POST',
+          body: formData
+        })
+        .then(response => {
+          if (response.status === 200) {
+            return response.json();
+          } else {
+            throw new Error(response.statusText);
+          }
+        })
+        .then(data => {
+          console.log(data);
+          alert('登录成功！');
+          window.location.href = '/homepage';
+        })
+        .catch(error => {
+          console.error(error);
+        });
+      });
+
+    </script>
+   <canvas id="cherryBlossomsCanvas"></canvas>
+   <script>
+     // 获取canvas元素
+     const canvas = document.getElementById('cherryBlossomsCanvas');
+     const ctx = canvas.getContext('2d');
+
+     // 设置canvas大小
+     canvas.width = window.innerWidth;
+     canvas.height = window.innerHeight;
+
+     // 定义樱花粒子类
+     class CherryBlossomParticle {
+       constructor() {
+         this.x = Math.random() * canvas.width;
+         this.y = -10;
+         this.vx = Math.random() * 2 - 1;
+         this.vy = Math.random() * 2 + 1;
+         this.radius = Math.random() * 5 + 5;
+         this.alpha = Math.random() * 0.5 + 0.5;
+       }
+
+       // 更新粒子位置
+       update() {
+         this.x += this.vx;
+         this.y += this.vy;
+         this.alpha -= 0.01;
+       }
+
+       // 绘制粒子
+       draw() {
+         ctx.beginPath();
+         ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+         ctx.fillStyle = `rgba(255, 183, 197, ${this.alpha})`;
+         ctx.fill();
+       }
+     }
+
+     // 创建樱花粒子数组
+     const cherryBlossomParticles = [];
+
+     // 定时器调用函数创建樱花粒子
+     setInterval(() => {
+       cherryBlossomParticles.push(new CherryBlossomParticle());
+     }, 100);
+
+     // 定时器调用函数绘制樱花飘落效果
+     setInterval(() => {
+       // 清空canvas
+       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+       // 绘制樱花粒子
+       cherryBlossomParticles.forEach((particle, index) => {
+         particle.update();
+         particle.draw();
+         if (particle.alpha < 0) {
+           cherryBlossomParticles.splice(index, 1);
+         }
+       });
+     }, 30);
+   </script>
+  </body>
+</html>

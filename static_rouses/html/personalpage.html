@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Personal Page</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .section {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      margin-top: 50px;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .section h2 {
+      flex-basis: 25%;
+      text-align: center;
+    }
+
+    .section button {
+      flex-basis: 25%;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #infoButton {
+      background-color: #4CAF50;
+    }
+
+    #articleButton {
+      background-color: #008CBA;
+    }
+
+    #diaryButton {
+      background-color: #f44336;
+    }
+
+    .section button:hover {
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+    <img src="/image/980.png" alt="My photo" style="position: fixed; opacity: 0.4; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;">
+  <h1>Welcome to My Personal Page</h1>
+  <div class="section">
+    <button id="infoButton">个人信息</button>
+    <button id="articleButton">文章</button>
+    <button id="diaryButton">日记板块</button>
+  </div>
+  <div class="section">
+    <h2>个人信息</h2>
+    <p>Here's some information about me...</p>
+  </div>
+  <div class="section">
+    <h2>文章</h2>
+    <p>Here's a list of my articles...</p>
+  </div>
+  <div class="section">
+    <h2>日记板块</h2>
+    <p>Here's my diary entries...</p>
+  </div>
+  <script>
+    const infoButton = document.getElementById('infoButton');
+    const articleButton = document.getElementById('articleButton');
+    const diaryButton = document.getElementById('diaryButton');
+
+    infoButton.addEventListener('click', () => {
+      window.location.href = '/private';
+    });
+
+    articleButton.addEventListener('click', () => {
+      window.location.href = '/personalarticles';
+    });
+
+    diaryButton.addEventListener('click', () => {
+      window.location.href = '/personaldiary';
+    });
+  </script>
+  <canvas id="cherryBlossomsCanvas"></canvas>
+  <script>
+    // 获取canvas元素
+    const canvas = document.getElementById('cherryBlossomsCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // 设置canvas大小
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // 定义樱花粒子类
+    class CherryBlossomParticle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = -10;
+        this.vx = Math.random() * 2 - 1;
+        this.vy = Math.random() * 2 + 1;
+        this.radius = Math.random() * 5 + 5;
+        this.alpha = Math.random() * 0.5 + 0.5;
+      }
+
+      // 更新粒子位置
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.alpha -= 0.01;
+      }
+
+      // 绘制粒子
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+        ctx.fillStyle = `rgba(255, 183, 197, ${this.alpha})`;
+        ctx.fill();
+      }
+    }
+
+    // 创建樱花粒子数组
+    const cherryBlossomParticles = [];
+
+    // 定时器调用函数创建樱花粒子
+    setInterval(() => {
+      cherryBlossomParticles.push(new CherryBlossomParticle());
+    }, 100);
+
+    // 定时器调用函数绘制樱花飘落效果
+    setInterval(() => {
+      // 清空canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // 绘制樱花粒子
+      cherryBlossomParticles.forEach((particle, index) => {
+        particle.update();
+        particle.draw();
+        if (particle.alpha < 0) {
+          cherryBlossomParticles.splice(index, 1);
+        }
+      });
+    }, 30);
+  </script>
+</body>
+</html>
